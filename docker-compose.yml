@@ -1,0 +1,19 @@
+
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount application code so changes reflect immediately if using debug
+      - ./app:/app/app
+      - ./data:/app/data
+      - ./notebook:/app/notebook
+    environment:
+      # Run Flask in debug mode inside Docker for local dev
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    command: sh -c "python train_model.py && flask run --host=0.0.0.0"
+    # Add a command override to make sure it restarts if models crash
+    restart: unless-stopped
